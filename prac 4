@@ -1,0 +1,277 @@
+student@student-OptiPlex-3070:~$ mysql -u root -p
+Enter password: 
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 3
+Server version: 5.7.33-0ubuntu0.16.04.1 (Ubuntu)
+
+Copyright (c) 2000, 2021, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> create database Library;
+Query OK, 1 row affected (0.00 sec)
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| A45                |
+| Company_info       |
+| Employee           |
+| Employee1          |
+| Library            |
+| STUDENT            |
+| School             |
+| Student            |
+| abb                |
+| abc                |
+| abcv               |
+| exibition          |
+| gaurav             |
+| laxmi              |
+| mysql              |
+| performance_schema |
+| samarth            |
+| shreyash1          |
+| sk                 |
+| sss                |
+| student            |
+| sys                |
+| users              |
++--------------------+
+24 rows in set (0.22 sec)
+
+mysql> use Library;
+Database changed
+mysql> create table Borrower(Roll_no int, Name varchar(30), Date_of_issue date, Name_of_book varchar(30) , Status varchar(30));
+Query OK, 0 rows affected (0.27 sec)
+
+mysql> create table Fine(Roll_no int, Date date, Amt int);
+Query OK, 0 rows affected (0.24 sec)
+
+mysql> show tables;
++-------------------+
+| Tables_in_Library |
++-------------------+
+| Borrower          |
+| Fine              |
++-------------------+
+2 rows in set (0.00 sec)
+
+mysql> describe Borrower;
++---------------+-------------+------+-----+---------+-------+
+| Field         | Type        | Null | Key | Default | Extra |
++---------------+-------------+------+-----+---------+-------+
+| Roll_no       | int(11)     | YES  |     | NULL    |       |
+| Name          | varchar(30) | YES  |     | NULL    |       |
+| Date_of_issue | date        | YES  |     | NULL    |       |
+| Name_of_book  | varchar(30) | YES  |     | NULL    |       |
+| Status        | varchar(30) | YES  |     | NULL    |       |
++---------------+-------------+------+-----+---------+-------+
+5 rows in set (0.01 sec)
+
+mysql> describe Fine;
++---------+---------+------+-----+---------+-------+
+| Field   | Type    | Null | Key | Default | Extra |
++---------+---------+------+-----+---------+-------+
+| Roll_no | int(11) | YES  |     | NULL    |       |
+| Date    | date    | YES  |     | NULL    |       |
+| Amt     | int(11) | YES  |     | NULL    |       |
++---------+---------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> insert into Borrower( Roll_no, Name, Date_of_issue, Name_of_book, Status) values (1, 'ABC', '2022-10-09', 'book1', 'issued'), (2, 'ABB', '2022-10-08', 'book2', 'Not_issued'), (3, 'ACC', '2022-09-22', 'book3', 'issued');
+Query OK, 3 rows affected (0.03 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+mysql> select * from Borrower;
++---------+------+---------------+--------------+------------+
+| Roll_no | Name | Date_of_issue | Name_of_book | Status     |
++---------+------+---------------+--------------+------------+
+|       1 | ABC  | 2022-10-09    | book1        | issued     |
+|       2 | ABB  | 2022-10-08    | book2        | Not_issued |
+|       3 | ACC  | 2022-09-22    | book3        | issued     |
++---------+------+---------------+--------------+------------+
+3 rows in set (0.00 sec)
+
+mysql> describe Borrower;
++---------------+-------------+------+-----+---------+-------+
+| Field         | Type        | Null | Key | Default | Extra |
++---------------+-------------+------+-----+---------+-------+
+| Roll_no       | int(11)     | YES  |     | NULL    |       |
+| Name          | varchar(30) | YES  |     | NULL    |       |
+| Date_of_issue | date        | YES  |     | NULL    |       |
+| Name_of_book  | varchar(30) | YES  |     | NULL    |       |
+| Status        | varchar(30) | YES  |     | NULL    |       |
++---------------+-------------+------+-----+---------+-------+
+5 rows in set (0.00 sec)
+
+mysql> delimiter $
+mysql> create procedure Pl1( In rln01 int(3), Name1 varchar(30))
+    -> begin declare i_date date;
+    -> declare diff int;
+    -> select Date_of_issue into i_date from Borrower where Roll_no = rln01 and Name_of_book= Name1;
+    -> select DATEDIFF ( CURDATE(), i_date) into diff;
+    -> if diff >15 then update Borrower set Status='R' where Roll_no=rln01 and Name_of_Book= Name1;
+    -> End if;
+    -> End;
+    -> $ delimiter;
+Query OK, 0 rows affected (0.05 sec)
+
+    -> 
+[1]+  Stopped                 mysql -u root -p
+student@student-OptiPlex-3070:~$ mysql -u root -p
+Enter password: 
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 4
+Server version: 5.7.33-0ubuntu0.16.04.1 (Ubuntu)
+
+Copyright (c) 2000, 2021, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> use Library;
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Database changed
+mysql> select * from Borrower;
++---------+------+---------------+--------------+------------+
+| Roll_no | Name | Date_of_issue | Name_of_book | Status     |
++---------+------+---------------+--------------+------------+
+|       1 | ABC  | 2022-10-09    | book1        | issued     |
+|       2 | ABB  | 2022-10-08    | book2        | Not_issued |
+|       3 | ACC  | 2022-09-22    | book3        | issued     |
++---------+------+---------------+--------------+------------+
+3 rows in set (0.00 sec)
+
+mysql> update Borrower set Status=I where Roll_no=1;
+ERROR 1054 (42S22): Unknown column 'I' in 'field list'
+mysql> update Borrower set Status='I' where Roll_no=1;
+Query OK, 1 row affected (0.05 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select * from Borrower;
++---------+------+---------------+--------------+------------+
+| Roll_no | Name | Date_of_issue | Name_of_book | Status     |
++---------+------+---------------+--------------+------------+
+|       1 | ABC  | 2022-10-09    | book1        | I          |
+|       2 | ABB  | 2022-10-08    | book2        | Not_issued |
+|       3 | ACC  | 2022-09-22    | book3        | issued     |
++---------+------+---------------+--------------+------------+
+3 rows in set (0.00 sec)
+
+mysql> update Borrower set Status='I' where Roll_no=2;
+Query OK, 1 row affected (0.04 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> update Borrower set Status='I' where Roll_no=3;
+Query OK, 1 row affected (0.04 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select * from Borrower;
++---------+------+---------------+--------------+--------+
+| Roll_no | Name | Date_of_issue | Name_of_book | Status |
++---------+------+---------------+--------------+--------+
+|       1 | ABC  | 2022-10-09    | book1        | I      |
+|       2 | ABB  | 2022-10-08    | book2        | I      |
+|       3 | ACC  | 2022-09-22    | book3        | I      |
++---------+------+---------------+--------------+--------+
+3 rows in set (0.00 sec)
+
+mysql> call Pl1(2, 'book2');
+Query OK, 1 row affected (0.00 sec)
+
+mysql> select * from Borrower;
++---------+------+---------------+--------------+--------+
+| Roll_no | Name | Date_of_issue | Name_of_book | Status |
++---------+------+---------------+--------------+--------+
+|       1 | ABC  | 2022-10-09    | book1        | I      |
+|       2 | ABB  | 2022-10-08    | book2        | I      |
+|       3 | ACC  | 2022-09-22    | book3        | I      |
++---------+------+---------------+--------------+--------+
+3 rows in set (0.00 sec)
+
+mysql> call Pl1(3, 'book3');
+Query OK, 1 row affected (0.00 sec)
+
+mysql> select * from Borrower;
++---------+------+---------------+--------------+--------+
+| Roll_no | Name | Date_of_issue | Name_of_book | Status |
++---------+------+---------------+--------------+--------+
+|       1 | ABC  | 2022-10-09    | book1        | I      |
+|       2 | ABB  | 2022-10-08    | book2        | I      |
+|       3 | ACC  | 2022-09-22    | book3        | I      |
++---------+------+---------------+--------------+--------+
+3 rows in set (0.00 sec)
+
+mysql> update Borrower set Date='2022-07-22' where Roll_no=1;
+ERROR 1054 (42S22): Unknown column 'Date' in 'field list'
+mysql> update Borrower set Date_of_issue='2022-07-22' where Roll_no=1;
+Query OK, 1 row affected (0.05 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select * from Borrower;
++---------+------+---------------+--------------+--------+
+| Roll_no | Name | Date_of_issue | Name_of_book | Status |
++---------+------+---------------+--------------+--------+
+|       1 | ABC  | 2022-07-22    | book1        | I      |
+|       2 | ABB  | 2022-10-08    | book2        | I      |
+|       3 | ACC  | 2022-09-22    | book3        | I      |
++---------+------+---------------+--------------+--------+
+3 rows in set (0.00 sec)
+
+mysql> call Pl1(1,'book1');
+Query OK, 1 row affected (0.04 sec)
+
+mysql> select * from Borrower;
++---------+------+---------------+--------------+--------+
+| Roll_no | Name | Date_of_issue | Name_of_book | Status |
++---------+------+---------------+--------------+--------+
+|       1 | ABC  | 2022-07-22    | book1        | R      |
+|       2 | ABB  | 2022-10-08    | book2        | I      |
+|       3 | ACC  | 2022-09-22    | book3        | I      |
++---------+------+---------------+--------------+--------+
+3 rows in set (0.00 sec)
+
+mysql> update Borrower set Date_of_issue='2022-07-20' where Roll_no=2;
+Query OK, 1 row affected (0.03 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> update Borrower set Date_of_issue='2022-06-20' where Roll_no=3;
+Query OK, 1 row affected (0.04 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select * from Borrower;
++---------+------+---------------+--------------+--------+
+| Roll_no | Name | Date_of_issue | Name_of_book | Status |
++---------+------+---------------+--------------+--------+
+|       1 | ABC  | 2022-07-22    | book1        | R      |
+|       2 | ABB  | 2022-07-20    | book2        | I      |
+|       3 | ACC  | 2022-06-20    | book3        | I      |
++---------+------+---------------+--------------+--------+
+3 rows in set (0.00 sec)
+
+mysql> call Pl1(3,'book3');
+Query OK, 1 row affected (0.04 sec)
+
+mysql> select * from Borrower;
++---------+------+---------------+--------------+--------+
+| Roll_no | Name | Date_of_issue | Name_of_book | Status |
++---------+------+---------------+--------------+--------+
+|       1 | ABC  | 2022-07-22    | book1        | R      |
+|       2 | ABB  | 2022-07-20    | book2        | I      |
+|       3 | ACC  | 2022-06-20    | book3        | R      |
++---------+------+---------------+--------------+--------+
+3 rows in set (0.00 sec)
+
+mysql>
