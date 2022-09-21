@@ -1,0 +1,21 @@
+
+
+
+create procedure Pl2( In rln01 int(3), Name1 varchar(30));
+begin declare i_date date;
+declare diff int;
+
+
+select Date_Of_Issue into i_date from Borrower where Roll_No= rln01 and Book= Name1;
+
+select DATEDIFF ( CURDATE(), i_date) into diff;
+
+
+if(diff>15 and diff(=30) then set Amt = diff*5);
+insert into Fine value(rln01,  CURDATE(),Amt);
+else if (diff>30) then set Amt = diff*50;
+insert into Fine values(rln01,CURDATE(),Amt);
+end if;
+update Borrower set status = 'R' where Roll_No =rlo1 and Name = Name1;
+end
+$delimiter;
