@@ -21,14 +21,14 @@ mysql> create procedure Pl3( In rln01 int(3), Name1 varchar(30))
     -> begin declare i_date date;
     -> declare fine int(20);
     -> declare day int(20);
-    -> select Date_of_issue into i_date from Borrower where Roll_no = rln01 and Name_of_book= Name1;
+    -> select Date_of_issue into i_date from Borrower where Roll_no = rln01 and Name= Name1;
     -> set day = DATEDIFF ( CURDATE(), i_date);
     -> IF(day>=15 and day<=30) then
     -> set fine = day*5;
     -> ELSEIF (day>30) then
     -> set fine = day*50;
     -> End IF;
-    -> update Borrower set Status='IN' where Roll_no = rln01 and Name_of_book = Name1;
+    -> update Borrower set Status='IN' where Roll_no = rln01 and Name = Name1;
     -> IF(fine is not null) then
     -> insert into Fine values(Roll_no, CURDATE(), fine);
     -> End IF;
