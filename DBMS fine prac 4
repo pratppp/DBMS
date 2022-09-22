@@ -1,0 +1,58 @@
+mysql> use Library;
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Database changed
+mysql> select * from Borrower
+    -> ;
++---------+------+---------------+--------------+--------+
+| Roll_no | Name | Date_of_issue | Name_of_book | Status |
++---------+------+---------------+--------------+--------+
+|       1 | ABC  | 2022-06-22    | Book1        | NI     |
+|       2 | ACC  | 2022-08-22    | Book2        | I      |
+|       2 | ABB  | 2022-08-20    | Book3        | I      |
+|       1 | AAA  | 2022-08-15    | Book4        | I      |
+|       5 | BBC  | 2022-08-25    | Book5        | I      |
++---------+------+---------------+--------------+--------+
+5 rows in set (0.00 sec)
+
+mysql> delimiter $
+mysql> create procedure Pl3( In rln01 int(3), Name1 varchar(30))
+    -> begin declare i_date date;
+    -> declare fine int(20);
+    -> declare day int(20);
+    -> select Date_of_issue into i_date from Borrower where Roll_no = rln01 and Name_of_book= Name1;
+    -> set day = DATEDIFF ( CURDATE(), i_date);
+    -> IF(day>=15 and day<=30) then
+    -> set fine = day*5;
+    -> ELSEIF (day>30) then
+    -> set fine = day*50;
+    -> End IF;
+    -> update Borrower set Status='IN' where Roll_no = rln01 and Name_of_book = Name1;
+    -> IF(fine is not null) then
+    -> insert into Fine values(Roll_no, CURDATE(), fine);
+    -> End IF;
+    -> End $
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> call Pl3(5, 'book5');
+    -> $
+Query OK, 1 row affected (0.08 sec)
+
+mysql> select * from borrower;
+    -> $
+ERROR 1146 (42S02): Table 'Library.borrower' doesn't exist
+mysql> select * from borrower;
+    -> ^C
+mysql> select * from Borrower;
+    -> $
++---------+------+---------------+--------------+--------+
+| Roll_no | Name | Date_of_issue | Name_of_book | Status |
++---------+------+---------------+--------------+--------+
+|       1 | ABC  | 2022-06-22    | Book1        | NI     |
+|       2 | ACC  | 2022-08-22    | Book2        | I      |
+|       2 | ABB  | 2022-08-20    | Book3        | I      |
+|       1 | AAA  | 2022-08-15    | Book4        | I      |
+|       5 | BBC  | 2022-08-25    | Book5        | IN     |
++---------+------+---------------+--------------+--------+
+5 rows in set (0.00 sec)
