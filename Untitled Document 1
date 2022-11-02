@@ -1,0 +1,115 @@
+mysql> create database bank;
+Query OK, 1 row affected (0.00 sec)
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| bank               |
+| mysql              |
+| performance_schema |
+| sys                |
++--------------------+
+5 rows in set (0.00 sec)
+
+mysql> use bank;
+Database changed
+mysql> create table 
+    -> ;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 1
+mysql> create table Borrower ( Roll_no int, Name varchar (20), Date_of_Issue date, Name_of_Book varchar (10), Status varchar (8));
+Query OK, 0 rows affected (0.24 sec)
+
+mysql> create table Library_Audit ( Roll_no int, Name varchar (20), Date_of_Issue date, Name_of_Book varchar (10), Status varchar (8));
+Query OK, 0 rows affected (0.30 sec)
+
+mysql> Insert into Borrower (Roll_no, Name, Date_of_Issue, Name_of_Book, Status) values (1,"AAA","2022-09-22","Book1","I"), (2,"BBB","2022-09-15","Book2","I"), (1,"CCC","2022-10-10","Book3","I"), (1,"DDD","2022-10-01","Book4","I");
+Query OK, 4 rows affected (0.04 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+mysql> describe Borrower;
++---------------+-------------+------+-----+---------+-------+
+| Field         | Type        | Null | Key | Default | Extra |
++---------------+-------------+------+-----+---------+-------+
+| Roll_no       | int(11)     | YES  |     | NULL    |       |
+| Name          | varchar(20) | YES  |     | NULL    |       |
+| Date_of_Issue | date        | YES  |     | NULL    |       |
+| Name_of_Book  | varchar(10) | YES  |     | NULL    |       |
+| Status        | varchar(8)  | YES  |     | NULL    |       |
++---------------+-------------+------+-----+---------+-------+
+5 rows in set (0.00 sec)
+
+mysql> select* from Borrower;
++---------+------+---------------+--------------+--------+
+| Roll_no | Name | Date_of_Issue | Name_of_Book | Status |
++---------+------+---------------+--------------+--------+
+|       1 | AAA  | 2022-09-22    | Book1        | I      |
+|       2 | BBB  | 2022-09-15    | Book2        | I      |
+|       1 | CCC  | 2022-10-10    | Book3        | I      |
+|       1 | DDD  | 2022-10-01    | Book4        | I      |
++---------+------+---------------+--------------+--------+
+4 rows in set (0.00 sec)
+
+mysql> UPDATE Borrower SET Roll_no = 3 where Name = "CCC";
+    -> $
+Query OK, 1 row affected (0.05 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> UPDATE Borrower SET Roll_no = 4 where Name = "DDD";
+    -> $
+Query OK, 1 row affected (0.04 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+(delimiter $)
+mysql> CREATE TRIGGER after_insert after insert
+    -> ON Borrower FOR each row
+    -> BEGIN
+    -> insert into Library_Audit values (New.Roll_no, New.Name, New.Date_of_Issue, New.Name_of_Book, New.Status);
+    -> end
+    -> $ delimiter;
+Query OK, 0 rows affected (0.06 sec)
+
+    -> select * from Borrower;
+    -> $
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'delimiter;select * from Borrower' at line 1
+mysql> select * from Borrower;
+    -> $
++---------+------+---------------+--------------+--------+
+| Roll_no | Name | Date_of_Issue | Name_of_Book | Status |
++---------+------+---------------+--------------+--------+
+|       1 | AAA  | 2022-09-22    | Book1        | I      |
+|       2 | BBB  | 2022-09-15    | Book2        | I      |
+|       3 | CCC  | 2022-10-10    | Book3        | I      |
+|       4 | DDD  | 2022-10-01    | Book4        | I      |
++---------+------+---------------+--------------+--------+
+4 rows in set (0.00 sec)
+
+mysql> Insert into Borrower (Roll_no, Name, Date_of_Issue, Name_of_Book, Status) values (5,"EEE","2022-10-20","Book5","I");
+    -> $
+Query OK, 1 row affected (0.02 sec)
+
+mysql> select * from Borrower;
+    -> $
++---------+------+---------------+--------------+--------+
+| Roll_no | Name | Date_of_Issue | Name_of_Book | Status |
++---------+------+---------------+--------------+--------+
+|       1 | AAA  | 2022-09-22    | Book1        | I      |
+|       2 | BBB  | 2022-09-15    | Book2        | I      |
+|       3 | CCC  | 2022-10-10    | Book3        | I      |
+|       4 | DDD  | 2022-10-01    | Book4        | I      |
+|       5 | EEE  | 2022-10-20    | Book5        | I      |
++---------+------+---------------+--------------+--------+
+5 rows in set (0.00 sec)
+
+mysql> select * from Library_Audit;
+    -> $
++---------+------+---------------+--------------+--------+
+| Roll_no | Name | Date_of_Issue | Name_of_Book | Status |
++---------+------+---------------+--------------+--------+
+|       5 | EEE  | 2022-10-20    | Book5        | I      |
++---------+------+---------------+--------------+--------+
+1 row in set (0.00 sec)
+
+mysql> 
+
+
